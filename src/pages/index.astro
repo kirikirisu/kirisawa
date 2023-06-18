@@ -1,35 +1,26 @@
 ---
-import '../reset.css';
+import BaseLayout from '../layouts/BaseLayout.astro';
 import LinkBord from '../components/LinkBord.astro';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<main class="container">
-		  <section class="introduction">
-				<div class="me">
-		      <h1>Kohei Kirisawa</h1>
-					<ul>
-						<li><p>株式会社PR TIMES</p></li>
-						<li><p>フロントエンドエンジニア</p></li>
-						<li><p>目玉焼きには塩胡椒を振っています。</p></li>
-					</ul>
-				</div>
-		    <img class="avatar" src="/kirisawak.png" />
-		  </section>
-			<LinkBord siteName="Twitter" userId="@kiririLee" siteUrl="https://twitter.com/kiririLee" />
-			<LinkBord siteName="GitHub" userId="kirikirisu" siteUrl="https://github.com/kirikirisu" />
-			<LinkBord siteName="エンジニアブログ" userId="kirisawa" siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/" />
-		</main>
-	</body>
-</html>
+<BaseLayout>
+  <main class="container">
+	  <section class="introduction">
+		  <div class="me">
+		    <h1>Kohei Kirisawa</h1>
+			  <ul>
+				  <li><p>株式会社PR TIMES</p></li>
+				  <li><p>フロントエンドエンジニア</p></li>
+				  <li><p>目玉焼きには塩胡椒を振っています。</p></li>
+			  </ul>
+		  </div>
+		  <img class="avatar" src="/kirisawak.png" />
+	  </section>
+	  <LinkBord siteName="Twitter" userId="@kiririLee" siteUrl="https://twitter.com/kiririLee" />
+	  <LinkBord siteName="GitHub" userId="kirikirisu" siteUrl="https://github.com/kirikirisu" />
+	  <LinkBord siteName="エンジニアブログ" userId="kirisawa" siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/" />
+  </main>
+</BaseLayout>
 
 <style>
 	body {
