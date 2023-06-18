@@ -1,4 +1,6 @@
 ---
+import '../reset.css';
+import LinkBord from '../components/LinkBord.astro';
 ---
 
 <html lang="en">
@@ -10,6 +12,49 @@
 		<title>Astro</title>
 	</head>
 	<body>
-		<h1>Astro</h1>
+		<main class="container">
+		  <section class="introduction">
+				<div class="me">
+		      <h1>Kohei Kirisawa</h1>
+					<ul>
+						<li><p>株式会社PR TIMES</p></li>
+						<li><p>フロントエンドエンジニア</p></li>
+						<li><p>目玉焼きには塩胡椒を振っています。</p></li>
+					</ul>
+				</div>
+		    <img class="avatar" src="/kirisawak.png" />
+		  </section>
+			<LinkBord siteName="Twitter" userId="@kiririLee" siteUrl="https://twitter.com/kiririLee" />
+			<LinkBord siteName="GitHub" userId="kirikirisu" siteUrl="https://github.com/kirikirisu" />
+			<LinkBord siteName="エンジニアブログ" userId="kirisawa" siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/" />
+		</main>
 	</body>
 </html>
+
+<style>
+	body {
+	}
+	h1 {
+		color: sienna;
+		font-size: 28px;
+    font-weight: bold;
+		margin-bottom: 15px;
+	}
+	.container {
+		width: 600px;
+		margin: 50px auto;
+	}
+	.introduction {
+		display: flex;
+		align-items: flex-start;
+	}
+	.me {
+		margin-right: 50px;
+	}
+	.avatar {
+		width: 190px;
+		height: 190px;
+		border-radius: 3%;
+		object-fit: cover;
+	}
+</style>
