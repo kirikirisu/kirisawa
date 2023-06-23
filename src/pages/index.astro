@@ -14,38 +14,75 @@ import LinkBord from '../components/LinkBord.astro';
 				  <li><p>目玉焼きには塩胡椒を振っています。</p></li>
 			  </ul>
 		  </div>
-		  <img class="avatar" src="/kirisawak.png" />
+			<div class="avatar">
+		    <img width="190" height="190" src="/kirisawak.png" />
+			</div>
 	  </section>
-	  <LinkBord siteName="Twitter" userId="@kiririLee" siteUrl="https://twitter.com/kiririLee" />
-	  <LinkBord siteName="GitHub" userId="kirikirisu" siteUrl="https://github.com/kirikirisu" />
-	  <LinkBord siteName="エンジニアブログ" userId="kirisawa" siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/" />
+		<section class="link-bord-union">
+	    <LinkBord class="link-bord" siteName="Twitter" userId="@kiririLee" siteUrl="https://twitter.com/kiririLee" />
+	    <LinkBord class="link-bord" siteName="GitHub" userId="kirikirisu" siteUrl="https://github.com/kirikirisu" />
+	    <LinkBord class="link-bord" siteName="エンジニアブログ" userId="kirisawa" siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/" />
+		</section>
   </main>
 </BaseLayout>
 
 <style>
 	body {
 	}
+	.container {
+		width: 600px;
+		margin: 30px auto;
+		padding: 0 15px;
+	}
+
 	h1 {
 		color: sienna;
 		font-size: 28px;
     font-weight: bold;
 		margin-bottom: 15px;
 	}
-	.container {
-		width: 600px;
-		margin: 50px auto;
-	}
+
 	.introduction {
 		display: flex;
-		align-items: flex-start;
+		margin-bottom: 50px;
 	}
+
 	.me {
 		margin-right: 50px;
 	}
+
 	.avatar {
 		width: 190px;
 		height: 190px;
-		border-radius: 3%;
-		object-fit: cover;
 	}
+
+	img {
+		object-fit: cover;
+		border-radius: 3%;
+	}
+
+	.link-bord-union {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+		gap: 10px;
+	}
+
+	.link-bord {
+		height: 170px;
+	}
+
+	@media(max-width: 480px){
+		.container {
+			width: 100vw;
+		}
+
+    .introduction{
+			display: flex;
+			flex-direction: column;
+    }
+
+		.me {
+			margin-bottom: 30px;
+		}
+  }
 </style>
