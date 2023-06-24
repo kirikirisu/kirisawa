@@ -81,13 +81,14 @@ import LinkBord from "../components/LinkBord.astro";
   const startButton = document.getElementById("start-button");
   startButton?.addEventListener("click", () => {
     console.log("start!");
-    const ctx = expandGameField();
-    if (!ctx) {
+    const gf = expandGameField();
+    if (!gf?.ctx) {
       console.error("context not found");
       return;
     }
-    const brickList = deployMultiBrick(ctx);
+    const brickList = deployMultiBrick(gf);
     console.log(brickList);
+    setInterval(draw(gf), 10);
   });
 
   // Prepare the canvas to be gamefiled
@@ -100,8 +101,11 @@ import LinkBord from "../components/LinkBord.astro";
     const gameField = document.createElement("canvas") as HTMLCanvasElement;
     const ctx = gameField.getContext("2d");
 
-    gameField.height = rect.height + LANE_SPACE;
-    gameField.width = rect.width;
+    const height = rect.height + LANE_SPACE;
+    const width = rect.width;
+
+    gameField.height = height;
+    gameField.width = width;
 
     const topOffset = rect.top;
     const leftOffset = rect.left;
@@ -114,13 +118,15 @@ import LinkBord from "../components/LinkBord.astro";
     // ctx?.fillRect(0, 0, rect.width, rect.height);
 
     root.appendChild(gameField);
-    return { ctx, topOffset, leftOffset };
+    return { ctx, topOffset, leftOffset, height, width };
   };
 
   type GameField = {
     ctx: CanvasRenderingContext2D;
     topOffset: number;
     leftOffset: number;
+    height: number;
+    width: number;
   };
 
   const deployMultiBrick = (gameField: GameField): Brick[] => {
@@ -141,6 +147,35 @@ import LinkBord from "../components/LinkBord.astro";
     });
 
     return brickList;
+  };
+
+  const draw = (gameField: GameField) => {
+    const { ctx, height, width } = gameField;
+    let x = width / 2;
+    let y = height - 30;
+    let dx = 2;
+    let dy = -2;
+    const ballRadius = 10;
+
+    return () => {
+      ctx.clearRect(0, 0, width, height);
+      ctx.beginPath();
+      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
+      ctx.fillStyle = "red";
+      ctx.fill();
+      ctx.closePath();
+
+      if (x + dx > width - ballRadius || x + dx < ballRadius) {
+        dx = -dx;
+      }
+
+      if (y + dy > height - ballRadius || y + dy < ballRadius) {
+        dy = -dy;
+      }
+
+      x += dx;
+      y += dy;
+    };
   };
 </script>
 
