@@ -159,20 +159,66 @@ import LinkBord from "../components/LinkBord.astro";
       ctx.fill();
       ctx.closePath();
 
+      function detectCollision(
+        rectX: number,
+        rectY: number,
+        rectWidth: number,
+        rectHeight: number,
+        circleX: number,
+        circleY: number,
+        circleRadius: number
+      ) {
+        var distX = Math.abs(circleX - rectX - rectWidth / 2);
+        var distY = Math.abs(circleY - rectY - rectHeight / 2);
+
+        // 衝突判定
+        if (
+          distX > rectWidth / 2 + circleRadius ||
+          distY > rectHeight / 2 + circleRadius
+        ) {
+          return; // 衝突していない
+        }
+
+        if (distX <= rectWidth / 2) {
+          return "vertical"; // 縦の辺と衝突
+        }
+
+        if (distY <= rectHeight / 2) {
+          return "horizontal"; // 横の辺と衝突
+        }
+
+        // 角の判定
+        var dx = distX - rectWidth / 2;
+        var dy = distY - rectHeight / 2;
+        if (dx * dx + dy * dy <= circleRadius * circleRadius) {
+          return "corner"; // 角と衝突
+        }
+
+        return; // 衝突していない
+      }
+
       // bricks
       const collisionDetection = () => {
         for (let i = 0; i < brickList.length; i++) {
           const b = brickList[i];
-          if (b.status === 1) {
-            if (
-              x > b.left &&
-              x < b.left + b.width &&
-              y > b.top &&
-              y < b.top + b.height
-            ) {
-              dy = -dy;
-              b.status = 0;
-            }
+          if (b.status !== 1) continue;
+
+          const direction = detectCollision(
+            b.left,
+            b.top,
+            b.width,
+            b.height,
+            x,
+            y,
+            ballRadius
+          );
+
+          if (direction === "vertical" || direction === "corner") {
+            dy = -dy;
+            b.status = 0;
+          } else if (direction === "horizontal") {
+            dx = -dx;
+            b.status = 0;
           }
         }
       };
@@ -210,7 +256,7 @@ import LinkBord from "../components/LinkBord.astro";
       }
     };
 
-    const interval = setInterval(draw, 10);
+    const interval = setInterval(draw, 20);
   });
 
   // Prepare the canvas to be gamefiled
