@@ -4,18 +4,18 @@ const { siteName, siteUrl, userId, class: className } = Astro.props;
 
 <section class={className}>
   <a href={siteUrl} target="_blank" rel="noopener">
-	  <h2>{siteName}</h2>	
-	  <p>{userId}</p>
+    <h2>{siteName}</h2>
+    <p>{userId}</p>
   </a>
 </section>
 
 <style>
-	section {
+  section {
     border: 1px solid #e5e7eb;
     border-radius: 3%;
-    box-shadow: 0 2px 4px rgba(0,0,0,.04);
-	}
-  a{
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+  }
+  a {
     padding: 15px;
     display: block;
     width: 100%;
@@ -26,6 +26,6 @@ const { siteName, siteUrl, userId, class: className } = Astro.props;
   }
   p {
     font-size: 14px;
-    color: rgba(0,0,0,.6);;
+    color: rgba(0, 0, 0, 0.6);
   }
 </style>

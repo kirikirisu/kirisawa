@@ -1,88 +1,109 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import LinkBord from '../components/LinkBord.astro';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LinkBord from "../components/LinkBord.astro";
 ---
 
 <BaseLayout>
   <main class="container">
-	  <section class="introduction">
-		  <div class="me">
-		    <h1>Kohei Kirisawa</h1>
-			  <ul>
-				  <li><p>株式会社PR TIMES</p></li>
-				  <li><p>フロントエンドエンジニア</p></li>
-				  <li><p>目玉焼きには塩胡椒を振っています。</p></li>
-			  </ul>
-		  </div>
-			<div class="avatar">
-		    <img width="190" height="190" src="/kirisawak.png" />
-			</div>
-	  </section>
-		<section class="link-bord-union">
-	    <LinkBord class="link-bord" siteName="Twitter" userId="@kiririLee" siteUrl="https://twitter.com/kiririLee" />
-	    <LinkBord class="link-bord" siteName="GitHub" userId="kirikirisu" siteUrl="https://github.com/kirikirisu" />
-	    <LinkBord class="link-bord" siteName="エンジニアブログ" userId="kirisawa" siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/" />
-		</section>
+    <section class="introduction">
+      <div class="me">
+        <h1>Kohei Kirisawa</h1>
+        <ul>
+          <li><p>株式会社PR TIMES</p></li>
+          <li><p>フロントエンドエンジニア</p></li>
+          <li><p>目玉焼きには塩胡椒を振っています。</p></li>
+        </ul>
+      </div>
+      <div class="avatar">
+        <img width="190" height="190" src="/kirisawak.png" />
+      </div>
+    </section>
+    <section class="link-bord-union">
+      <LinkBord
+        class="link-bord"
+        siteName="Twitter"
+        userId="@kiririLee"
+        siteUrl="https://twitter.com/kiririLee"
+      />
+      <LinkBord
+        class="link-bord"
+        siteName="GitHub"
+        userId="kirikirisu"
+        siteUrl="https://github.com/kirikirisu"
+      />
+      <LinkBord
+        class="link-bord"
+        siteName="エンジニアブログ"
+        userId="kirisawa"
+        siteUrl="https://developers.prtimes.jp/author/kirisawakouhei/"
+      />
+      <LinkBord
+        class="link-bord"
+        siteName="Qiita"
+        userId="kiririri"
+        siteUrl="https://qiita.com/kiririri"
+      />
+    </section>
   </main>
 </BaseLayout>
 
 <style>
-	body {
-	}
-	.container {
-		width: 600px;
-		margin: 30px auto;
-		padding: 0 15px;
-	}
+  body {
+  }
+  .container {
+    width: 600px;
+    margin: 30px auto;
+    padding: 0 15px;
+  }
 
-	h1 {
-		color: sienna;
-		font-size: 28px;
+  h1 {
+    color: sienna;
+    font-size: 28px;
     font-weight: bold;
-		margin-bottom: 15px;
-	}
+    margin-bottom: 15px;
+  }
 
-	.introduction {
-		display: flex;
-		margin-bottom: 50px;
-	}
+  .introduction {
+    display: flex;
+    margin-bottom: 50px;
+  }
 
-	.me {
-		margin-right: 50px;
-	}
+  .me {
+    margin-right: 50px;
+  }
 
-	.avatar {
-		width: 190px;
-		height: 190px;
-	}
+  .avatar {
+    width: 190px;
+    height: 190px;
+  }
 
-	img {
-		object-fit: cover;
-		border-radius: 3%;
-	}
+  img {
+    object-fit: cover;
+    border-radius: 3%;
+  }
 
-	.link-bord-union {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-		gap: 10px;
-	}
+  .link-bord-union {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+    gap: 10px;
+  }
 
-	.link-bord {
-		height: 170px;
-	}
+  .link-bord {
+    height: 170px;
+  }
 
-	@media(max-width: 480px){
-		.container {
-			width: 100vw;
-		}
-
-    .introduction{
-			display: flex;
-			flex-direction: column;
+  @media (max-width: 480px) {
+    .container {
+      width: 100vw;
     }
 
-		.me {
-			margin-bottom: 30px;
-		}
+    .introduction {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .me {
+      margin-bottom: 30px;
+    }
   }
 </style>
