@@ -159,7 +159,7 @@ import LinkBord from "../components/LinkBord.astro";
       ctx.fill();
       ctx.closePath();
 
-      function detectCollision(
+      const detectCollision = (
         rectX: number,
         rectY: number,
         rectWidth: number,
@@ -167,9 +167,11 @@ import LinkBord from "../components/LinkBord.astro";
         circleX: number,
         circleY: number,
         circleRadius: number
-      ) {
-        var distX = Math.abs(circleX - rectX - rectWidth / 2);
-        var distY = Math.abs(circleY - rectY - rectHeight / 2);
+      ) => {
+        const crx = circleX - rectX;
+        const cry = circleY - rectY;
+        const distX = Math.abs(crx - rectWidth / 2);
+        const distY = Math.abs(cry - rectHeight / 2);
 
         // 衝突判定
         if (
@@ -188,14 +190,14 @@ import LinkBord from "../components/LinkBord.astro";
         }
 
         // 角の判定
-        var dx = distX - rectWidth / 2;
-        var dy = distY - rectHeight / 2;
+        const dx = distX - rectWidth / 2;
+        const dy = distY - rectHeight / 2;
         if (dx * dx + dy * dy <= circleRadius * circleRadius) {
           return "corner"; // 角と衝突
         }
 
         return; // 衝突していない
-      }
+      };
 
       // bricks
       const collisionDetection = () => {
@@ -256,7 +258,7 @@ import LinkBord from "../components/LinkBord.astro";
       }
     };
 
-    const interval = setInterval(draw, 20);
+    const interval = setInterval(draw, 10);
   });
 
   // Prepare the canvas to be gamefiled
