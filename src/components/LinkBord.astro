@@ -2,15 +2,15 @@
 const { siteName, siteUrl, userId, class: className } = Astro.props;
 ---
 
-<section class={className}>
+<div class={className}>
   <a href={siteUrl} target="_blank" rel="noopener">
     <h2>{siteName}</h2>
     <p>{userId}</p>
   </a>
-</section>
+</div>
 
 <style>
-  section {
+  div {
     border: 1px solid #e5e7eb;
     border-radius: 3%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);

@@ -4,11 +4,11 @@ import LinkBord from "../components/LinkBord.astro";
 ---
 
 <BaseLayout>
-  <main class="container">
+  <main id="game-field" class="container">
     <section class="introduction">
       <div class="me">
-        <h1>Kohei Kirisawa</h1>
-        <ul>
+        <h1 id="name">Kohei Kirisawa</h1>
+        <ul id="profile">
           <li><p>株式会社PR TIMES</p></li>
           <li><p>フロントエンドエンジニア</p></li>
           <li><p>目玉焼きには塩胡椒を振っています。</p></li>
@@ -44,13 +44,79 @@ import LinkBord from "../components/LinkBord.astro";
         siteUrl="https://qiita.com/kiririri"
       />
     </section>
+    <button
+      style={{ height: "100px", width: "100px", backgroundColor: "cyan" }}
+      id="start-button">start</button
+    >
   </main>
 </BaseLayout>
+
+<script>
+  const utils = {
+    appearBrick: (targetElement: Element) => {
+      const rect = targetElement.getBoundingClientRect();
+
+      // 新しい要素を作成
+      const overlayElement = document.createElement("div");
+      // スタイルを設定
+      overlayElement.style.position = "absolute";
+      overlayElement.style.width = rect.width + "px";
+      overlayElement.style.height = rect.height + "px";
+      overlayElement.style.left = rect.left + "px";
+      overlayElement.style.top = rect.top + "px";
+      overlayElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)"; // 例: 背景色を赤半透明に設定
+
+      // 要素を追加
+      document.body.appendChild(overlayElement);
+    },
+  };
+
+  const startButton = document.getElementById("start-button");
+  startButton?.addEventListener("click", () => {
+    console.log("start!");
+    expandGameField();
+  });
+
+  const expandGameField = () => {
+    const LANE_SPACE = 250;
+
+    const root = document.getElementById("game-field") as HTMLElement;
+    const rect = root.getBoundingClientRect();
+
+    const gameField = document.createElement("canvas") as HTMLCanvasElement;
+    const ctx = gameField.getContext("2d");
+
+    gameField.height = rect.height;
+    gameField.width = rect.width;
+    console.log({ left: rect.left });
+
+    gameField.style.position = "absolute";
+    gameField.style.width = rect.width + "px";
+    gameField.style.height = rect.height + LANE_SPACE + "px";
+    gameField.style.left = "0px";
+    gameField.style.top = "0px";
+
+    if (!ctx) return;
+    ctx.fillStyle = "red";
+    ctx?.fillRect(0, 0, rect.width, rect.height);
+
+    root.appendChild(gameField);
+  };
+
+  const appearBricks = () => {
+    const { appearBrick } = utils;
+    appearBrick(document.getElementById("name") as HTMLHeadElement);
+
+    const linkBordList = document.getElementsByClassName("link-bord");
+    [...linkBordList].forEach((lb) => appearBrick(lb));
+  };
+</script>
 
 <style>
   body {
   }
   .container {
+    position: relative;
     width: 600px;
     margin: 30px auto;
     padding: 0 15px;
