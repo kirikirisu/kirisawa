@@ -140,7 +140,13 @@ import LinkBord from "../components/LinkBord.astro";
 
       // ball
       if (x + dx > width - ballRadius || x + dx < ballRadius) dx = -dx;
-      if (y + dy > height - ballRadius || y + dy < ballRadius) dy = -dy;
+      if (y + dy < ballRadius) {
+        dy = -dy;
+      } else if (y + dy > height - ballRadius) {
+        alert("GAME OVER");
+        document.location.reload();
+        clearInterval(interval);
+      }
 
       x += dx;
       y += dy;
@@ -159,7 +165,7 @@ import LinkBord from "../components/LinkBord.astro";
       }
     };
 
-    setInterval(draw, 10);
+    const interval = setInterval(draw, 10);
   });
 
   // Prepare the canvas to be gamefiled
