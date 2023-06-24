@@ -52,59 +52,34 @@ import LinkBord from "../components/LinkBord.astro";
 </BaseLayout>
 
 <script>
-  type Brick = {
-    top: number;
-    left: number;
-    height: number;
-    width: number;
-    status: number;
-  };
-  const utils = {
-    appearBrick: (targetElement: Element, gameFiled: GameField): Brick => {
-      const rect = targetElement.getBoundingClientRect();
-      const { ctx, topOffset, leftOffset } = gameFiled;
-
-      const top = rect.top - topOffset;
-      const left = rect.left - leftOffset;
-      const height = rect.height;
-      const width = rect.width;
-
-      ctx.beginPath();
-      ctx.rect(left, top, rect.width, rect.height);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
-
-      return { top, left, height, width, status: 1 };
-    },
-    drawMultiBrick: (gameField: GameField, brickList: Brick[]): Brick[] => {
-      const { ctx } = gameField;
-
-      for (const brick of brickList) {
-        if (brick.status !== 1) continue;
-
-        ctx.beginPath();
-        ctx.rect(brick.left, brick.top, brick.width, brick.height);
-        ctx.fillStyle = "#0095DD";
-        ctx.fill();
-        ctx.closePath();
-      }
-
-      return brickList;
-    },
-  };
+  import { gameFactory } from "../lib/gameFactory";
 
   const startButton = document.getElementById("start-button");
   startButton?.addEventListener("click", () => {
     console.log("start!");
-    const { drawMultiBrick } = utils;
+    const {
+      expandGameField,
+      deployMultiBrick,
+      drawMultiBrick,
+      detectCollision,
+    } = gameFactory;
 
-    const gf = expandGameField();
+    const root = document.getElementById("game-field") as HTMLElement;
+    const name = document.getElementById("name") as HTMLHeadElement;
+    const profile = document.getElementById("profile") as HTMLUListElement;
+    const avatar = document.getElementById("avatar") as HTMLDivElement;
+    const linkBordList = document.getElementsByClassName(
+      "link-bord"
+    ) as HTMLCollection;
+    const targetList = [...linkBordList, name, profile, avatar];
+
+    const gf = expandGameField(root);
     if (!gf?.ctx) {
       console.error("context not found");
       return;
     }
-    const brickList = deployMultiBrick(gf);
+
+    const brickList = deployMultiBrick(gf, targetList);
 
     const keyDownHandler = (e: KeyboardEvent) => {
       if (e.key === "Right" || e.key === "ArrowRight") {
@@ -128,8 +103,8 @@ import LinkBord from "../components/LinkBord.astro";
     const { ctx, height, width } = gf;
     let x = width / 2;
     let y = height - 30;
-    let dx = 2;
-    let dy = -2;
+    let dx = 4;
+    let dy = -4;
 
     const ballRadius = 10;
     const paddleHeight = 10;
@@ -138,6 +113,8 @@ import LinkBord from "../components/LinkBord.astro";
 
     let rightPressed = false;
     let leftPressed = false;
+
+    let pause = false;
 
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
@@ -158,46 +135,6 @@ import LinkBord from "../components/LinkBord.astro";
       ctx.fillStyle = "#0095DD";
       ctx.fill();
       ctx.closePath();
-
-      const detectCollision = (
-        rectX: number,
-        rectY: number,
-        rectWidth: number,
-        rectHeight: number,
-        circleX: number,
-        circleY: number,
-        circleRadius: number
-      ) => {
-        const crx = circleX - rectX;
-        const cry = circleY - rectY;
-        const distX = Math.abs(crx - rectWidth / 2);
-        const distY = Math.abs(cry - rectHeight / 2);
-
-        // 衝突判定
-        if (
-          distX > rectWidth / 2 + circleRadius ||
-          distY > rectHeight / 2 + circleRadius
-        ) {
-          return; // 衝突していない
-        }
-
-        if (distX <= rectWidth / 2) {
-          return "vertical"; // 縦の辺と衝突
-        }
-
-        if (distY <= rectHeight / 2) {
-          return "horizontal"; // 横の辺と衝突
-        }
-
-        // 角の判定
-        const dx = distX - rectWidth / 2;
-        const dy = distY - rectHeight / 2;
-        if (dx * dx + dy * dy <= circleRadius * circleRadius) {
-          return "corner"; // 角と衝突
-        }
-
-        return; // 衝突していない
-      };
 
       // bricks
       const collisionDetection = () => {
@@ -235,9 +172,9 @@ import LinkBord from "../components/LinkBord.astro";
         if (x > paddleX && x < paddleX + paddleWidth) {
           dy = -dy;
         } else {
+          pause = true;
           alert("GAME OVER");
           document.location.reload();
-          clearInterval(interval);
         }
       }
 
@@ -256,68 +193,12 @@ import LinkBord from "../components/LinkBord.astro";
       } else if (leftPressed) {
         paddleX -= 7;
       }
+
+      if (!pause) requestAnimationFrame(draw);
     };
 
-    const interval = setInterval(draw, 10);
+    requestAnimationFrame(draw);
   });
-
-  // Prepare the canvas to be gamefiled
-  const expandGameField = (): GameField | undefined => {
-    const LANE_SPACE = 250;
-
-    const root = document.getElementById("game-field") as HTMLElement;
-    const rect = root.getBoundingClientRect();
-
-    const gameField = document.createElement("canvas") as HTMLCanvasElement;
-    const ctx = gameField.getContext("2d");
-
-    const height = rect.height + LANE_SPACE;
-    const width = rect.width;
-
-    gameField.height = height;
-    gameField.width = width;
-
-    const topOffset = rect.top;
-    const leftOffset = rect.left;
-    gameField.style.position = "absolute";
-    gameField.style.top = topOffset + "px";
-    gameField.style.left = leftOffset + "px";
-
-    if (!ctx) return;
-    // ctx.fillStyle = "red";
-    // ctx?.fillRect(0, 0, rect.width, rect.height);
-
-    root.appendChild(gameField);
-    return { ctx, topOffset, leftOffset, height, width };
-  };
-
-  type GameField = {
-    ctx: CanvasRenderingContext2D;
-    topOffset: number;
-    leftOffset: number;
-    height: number;
-    width: number;
-  };
-
-  const deployMultiBrick = (gameField: GameField): Brick[] => {
-    const { appearBrick } = utils;
-    const brickList: Brick[] = [];
-
-    const name = document.getElementById("name") as HTMLHeadElement;
-    const profile = document.getElementById("profile") as HTMLUListElement;
-    const avatar = document.getElementById("avatar") as HTMLDivElement;
-    const linkBordList = document.getElementsByClassName(
-      "link-bord"
-    ) as HTMLCollection;
-
-    const targetList = [...linkBordList, name, profile, avatar];
-    targetList.forEach((target) => {
-      const appearedBrick = appearBrick(target, gameField);
-      brickList.push(appearedBrick);
-    });
-
-    return brickList;
-  };
 </script>
 
 <style>
