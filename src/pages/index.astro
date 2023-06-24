@@ -57,6 +57,7 @@ import LinkBord from "../components/LinkBord.astro";
     left: number;
     height: number;
     width: number;
+    status: number;
   };
   const utils = {
     appearBrick: (targetElement: Element, gameFiled: GameField): Brick => {
@@ -74,13 +75,30 @@ import LinkBord from "../components/LinkBord.astro";
       ctx.fill();
       ctx.closePath();
 
-      return { top, left, height, width };
+      return { top, left, height, width, status: 1 };
+    },
+    drawMultiBrick: (gameField: GameField, brickList: Brick[]): Brick[] => {
+      const { ctx } = gameField;
+
+      for (const brick of brickList) {
+        if (brick.status !== 1) continue;
+
+        ctx.beginPath();
+        ctx.rect(brick.left, brick.top, brick.width, brick.height);
+        ctx.fillStyle = "#0095DD";
+        ctx.fill();
+        ctx.closePath();
+      }
+
+      return brickList;
     },
   };
 
   const startButton = document.getElementById("start-button");
   startButton?.addEventListener("click", () => {
     console.log("start!");
+    const { drawMultiBrick } = utils;
+
     const gf = expandGameField();
     if (!gf?.ctx) {
       console.error("context not found");
@@ -124,6 +142,9 @@ import LinkBord from "../components/LinkBord.astro";
     const draw = () => {
       ctx.clearRect(0, 0, width, height);
 
+      // draw bricks
+      drawMultiBrick(gf, brickList);
+
       // draw ball
       ctx.beginPath();
       ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
@@ -138,14 +159,38 @@ import LinkBord from "../components/LinkBord.astro";
       ctx.fill();
       ctx.closePath();
 
+      // bricks
+      const collisionDetection = () => {
+        for (let i = 0; i < brickList.length; i++) {
+          const b = brickList[i];
+          if (b.status === 1) {
+            if (
+              x > b.left &&
+              x < b.left + b.width &&
+              y > b.top &&
+              y < b.top + b.height
+            ) {
+              dy = -dy;
+              b.status = 0;
+            }
+          }
+        }
+      };
+
+      collisionDetection();
+
       // ball
       if (x + dx > width - ballRadius || x + dx < ballRadius) dx = -dx;
       if (y + dy < ballRadius) {
         dy = -dy;
       } else if (y + dy > height - ballRadius) {
-        alert("GAME OVER");
-        document.location.reload();
-        clearInterval(interval);
+        if (x > paddleX && x < paddleX + paddleWidth) {
+          dy = -dy;
+        } else {
+          alert("GAME OVER");
+          document.location.reload();
+          clearInterval(interval);
+        }
       }
 
       x += dx;
