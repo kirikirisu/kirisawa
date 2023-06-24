@@ -14,7 +14,7 @@ import LinkBord from "../components/LinkBord.astro";
           <li><p>目玉焼きには塩胡椒を振っています。</p></li>
         </ul>
       </div>
-      <div class="avatar">
+      <div id="avatar" class="avatar">
         <img width="190" height="190" src="/kirisawak.png" />
       </div>
     </section>
@@ -52,32 +52,46 @@ import LinkBord from "../components/LinkBord.astro";
 </BaseLayout>
 
 <script>
+  type Brick = {
+    top: number;
+    left: number;
+    height: number;
+    width: number;
+  };
   const utils = {
-    appearBrick: (targetElement: Element) => {
+    appearBrick: (targetElement: Element, gameFiled: GameField): Brick => {
       const rect = targetElement.getBoundingClientRect();
+      const { ctx, topOffset, leftOffset } = gameFiled;
 
-      // 新しい要素を作成
-      const overlayElement = document.createElement("div");
-      // スタイルを設定
-      overlayElement.style.position = "absolute";
-      overlayElement.style.width = rect.width + "px";
-      overlayElement.style.height = rect.height + "px";
-      overlayElement.style.left = rect.left + "px";
-      overlayElement.style.top = rect.top + "px";
-      overlayElement.style.backgroundColor = "rgba(255, 0, 0, 0.5)"; // 例: 背景色を赤半透明に設定
+      const top = rect.top - topOffset;
+      const left = rect.left - leftOffset;
+      const height = rect.height;
+      const width = rect.width;
 
-      // 要素を追加
-      document.body.appendChild(overlayElement);
+      ctx.beginPath();
+      ctx.rect(left, top, rect.width, rect.height);
+      ctx.fillStyle = "#0095DD";
+      ctx.fill();
+      ctx.closePath();
+
+      return { top, left, height, width };
     },
   };
 
   const startButton = document.getElementById("start-button");
   startButton?.addEventListener("click", () => {
     console.log("start!");
-    expandGameField();
+    const ctx = expandGameField();
+    if (!ctx) {
+      console.error("context not found");
+      return;
+    }
+    const brickList = deployMultiBrick(ctx);
+    console.log(brickList);
   });
 
-  const expandGameField = () => {
+  // Prepare the canvas to be gamefiled
+  const expandGameField = (): GameField | undefined => {
     const LANE_SPACE = 250;
 
     const root = document.getElementById("game-field") as HTMLElement;
@@ -86,29 +100,47 @@ import LinkBord from "../components/LinkBord.astro";
     const gameField = document.createElement("canvas") as HTMLCanvasElement;
     const ctx = gameField.getContext("2d");
 
-    gameField.height = rect.height;
+    gameField.height = rect.height + LANE_SPACE;
     gameField.width = rect.width;
-    console.log({ left: rect.left });
 
+    const topOffset = rect.top;
+    const leftOffset = rect.left;
     gameField.style.position = "absolute";
-    gameField.style.width = rect.width + "px";
-    gameField.style.height = rect.height + LANE_SPACE + "px";
-    gameField.style.left = "0px";
-    gameField.style.top = "0px";
+    gameField.style.top = topOffset + "px";
+    gameField.style.left = leftOffset + "px";
 
     if (!ctx) return;
-    ctx.fillStyle = "red";
-    ctx?.fillRect(0, 0, rect.width, rect.height);
+    // ctx.fillStyle = "red";
+    // ctx?.fillRect(0, 0, rect.width, rect.height);
 
     root.appendChild(gameField);
+    return { ctx, topOffset, leftOffset };
   };
 
-  const appearBricks = () => {
-    const { appearBrick } = utils;
-    appearBrick(document.getElementById("name") as HTMLHeadElement);
+  type GameField = {
+    ctx: CanvasRenderingContext2D;
+    topOffset: number;
+    leftOffset: number;
+  };
 
-    const linkBordList = document.getElementsByClassName("link-bord");
-    [...linkBordList].forEach((lb) => appearBrick(lb));
+  const deployMultiBrick = (gameField: GameField): Brick[] => {
+    const { appearBrick } = utils;
+    const brickList: Brick[] = [];
+
+    const name = document.getElementById("name") as HTMLHeadElement;
+    const profile = document.getElementById("profile") as HTMLUListElement;
+    const avatar = document.getElementById("avatar") as HTMLDivElement;
+    const linkBordList = document.getElementsByClassName(
+      "link-bord"
+    ) as HTMLCollection;
+
+    const targetList = [...linkBordList, name, profile, avatar];
+    targetList.forEach((target) => {
+      const appearedBrick = appearBrick(target, gameField);
+      brickList.push(appearedBrick);
+    });
+
+    return brickList;
   };
 </script>
 
@@ -116,7 +148,6 @@ import LinkBord from "../components/LinkBord.astro";
   body {
   }
   .container {
-    position: relative;
     width: 600px;
     margin: 30px auto;
     padding: 0 15px;
