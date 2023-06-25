@@ -60,7 +60,7 @@ export class BrickBooster {
   createGameField = () => {
     if (!this.root) throw new Error("The root element must be specified.");
 
-    const LANE_SPACE = 250;
+    const LANE_SPACE = 100;
     const rect = this.root.getBoundingClientRect();
 
     const gameField = document.createElement("canvas") as HTMLCanvasElement;
