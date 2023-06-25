@@ -52,19 +52,13 @@ import LinkBord from "../components/LinkBord.astro";
 </BaseLayout>
 
 <script>
-  import { gameFactory } from "../lib/gameFactory";
+  import { BrickBooster } from "../lib/BrickBooster";
 
   const startButton = document.getElementById("start-button");
   startButton?.addEventListener("click", () => {
-    console.log("start!");
-    const {
-      expandGameField,
-      deployMultiBrick,
-      drawMultiBrick,
-      detectCollision,
-    } = gameFactory;
-
+    console.log("game start!");
     const root = document.getElementById("game-field") as HTMLElement;
+
     const name = document.getElementById("name") as HTMLHeadElement;
     const profile = document.getElementById("profile") as HTMLUListElement;
     const avatar = document.getElementById("avatar") as HTMLDivElement;
@@ -73,131 +67,12 @@ import LinkBord from "../components/LinkBord.astro";
     ) as HTMLCollection;
     const targetList = [...linkBordList, name, profile, avatar];
 
-    const gf = expandGameField(root);
-    if (!gf?.ctx) {
-      console.error("context not found");
-      return;
-    }
+    const bb = new BrickBooster(root);
 
-    const brickList = deployMultiBrick(gf, targetList);
-
-    const keyDownHandler = (e: KeyboardEvent) => {
-      if (e.key === "Right" || e.key === "ArrowRight") {
-        rightPressed = true;
-      } else if (e.key === "Left" || e.key === "ArrowLeft") {
-        leftPressed = true;
-      }
-    };
-
-    const keyUpHandler = (e: KeyboardEvent) => {
-      if (e.key === "Right" || e.key === "ArrowRight") {
-        rightPressed = false;
-      } else if (e.key === "Left" || e.key === "ArrowLeft") {
-        leftPressed = false;
-      }
-    };
-
-    document.addEventListener("keydown", keyDownHandler, false);
-    document.addEventListener("keyup", keyUpHandler, false);
-
-    const { ctx, height, width } = gf;
-    let x = width / 2;
-    let y = height - 30;
-    let dx = 4;
-    let dy = -4;
-
-    const ballRadius = 10;
-    const paddleHeight = 10;
-    const paddleWidth = 75;
-    let paddleX = (width - paddleWidth) / 2;
-
-    let rightPressed = false;
-    let leftPressed = false;
-
-    let pause = false;
-
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-
-      // draw bricks
-      drawMultiBrick(gf, brickList);
-
-      // draw ball
-      ctx.beginPath();
-      ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-      ctx.fillStyle = "red";
-      ctx.fill();
-      ctx.closePath();
-
-      // draw paddle
-      ctx.beginPath();
-      ctx.rect(paddleX, height - paddleHeight, paddleWidth, paddleHeight);
-      ctx.fillStyle = "#0095DD";
-      ctx.fill();
-      ctx.closePath();
-
-      // bricks
-      const collisionDetection = () => {
-        for (let i = 0; i < brickList.length; i++) {
-          const b = brickList[i];
-          if (b.status !== 1) continue;
-
-          const direction = detectCollision(
-            b.left,
-            b.top,
-            b.width,
-            b.height,
-            x,
-            y,
-            ballRadius
-          );
-
-          if (direction === "vertical" || direction === "corner") {
-            dy = -dy;
-            b.status = 0;
-          } else if (direction === "horizontal") {
-            dx = -dx;
-            b.status = 0;
-          }
-        }
-      };
-
-      collisionDetection();
-
-      // ball
-      if (x + dx > width - ballRadius || x + dx < ballRadius) dx = -dx;
-      if (y + dy < ballRadius) {
-        dy = -dy;
-      } else if (y + dy > height - ballRadius) {
-        if (x > paddleX && x < paddleX + paddleWidth) {
-          dy = -dy;
-        } else {
-          pause = true;
-          alert("GAME OVER");
-          document.location.reload();
-        }
-      }
-
-      x += dx;
-      y += dy;
-
-      // paddle
-      if (rightPressed) {
-        paddleX = Math.min(paddleX + 7, width - paddleWidth);
-      } else if (leftPressed) {
-        paddleX = Math.max(paddleX - 7, 0);
-      }
-
-      if (rightPressed) {
-        paddleX += 7;
-      } else if (leftPressed) {
-        paddleX -= 7;
-      }
-
-      if (!pause) requestAnimationFrame(draw);
-    };
-
-    requestAnimationFrame(draw);
+    bb.init();
+    bb.deployMultiBrickByElements(targetList);
+    bb.bindcontroller();
+    bb.draw();
   });
 </script>
 
