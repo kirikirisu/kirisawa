@@ -1,0 +1,36 @@
+---
+const { id, class: className } = Astro.props;
+---
+
+<div class="container">
+  <button id={id}><h2>Game Start</h2></button>
+</div>
+
+<style>
+  .container {
+    border: 1px solid #e5e7eb;
+    border-radius: 3%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    color: #a0522d;
+    background-color: white;
+    transition: all 0.2s ease;
+  }
+  .container:hover {
+    background-color: #a0522d;
+    color: white;
+  }
+  button {
+    padding: 15px;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+  h2 {
+    font-size: 20px;
+    font-weight: bold;
+  }
+  p {
+    font-size: 14px;
+    color: rgba(0, 0, 0, 0.6);
+  }
+</style>

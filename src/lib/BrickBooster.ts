@@ -113,7 +113,7 @@ export class BrickBooster {
 
     ctx.beginPath();
     ctx.rect(left, top, rect.width, rect.height);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "#a0522d";
     ctx.fill();
     ctx.closePath();
 
@@ -195,7 +195,7 @@ export class BrickBooster {
 
       ctx.beginPath();
       ctx.rect(brick.left, brick.top, brick.width, brick.height);
-      ctx.fillStyle = "#0095DD";
+      ctx.fillStyle = "#a0522d";
       ctx.fill();
       ctx.closePath();
     }
@@ -212,7 +212,7 @@ export class BrickBooster {
 
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = "red";
+    ctx.fillStyle = "#a0522d";
     ctx.fill();
     ctx.closePath();
   };
@@ -228,7 +228,7 @@ export class BrickBooster {
 
     ctx.beginPath();
     ctx.rect(paddleX, height - paddleHeight, paddleWidth, paddleHeight);
-    ctx.fillStyle = "#0095DD";
+    ctx.fillStyle = "#a0522d";
     ctx.fill();
     ctx.closePath();
   };

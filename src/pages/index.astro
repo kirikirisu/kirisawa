@@ -1,6 +1,7 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import LinkBord from "../components/LinkBord.astro";
+import ButtonBord from "../components/ButtonBord.astro";
 ---
 
 <BaseLayout>
@@ -43,18 +44,15 @@ import LinkBord from "../components/LinkBord.astro";
         userId="kiririri"
         siteUrl="https://qiita.com/kiririri"
       />
+      <ButtonBord id="start-game-button" />
     </section>
-    <button
-      style={{ height: "100px", width: "100px", backgroundColor: "cyan" }}
-      id="start-button">start</button
-    >
   </main>
 </BaseLayout>
 
 <script>
   import { BrickBooster } from "../lib/BrickBooster";
 
-  const startButton = document.getElementById("start-button");
+  const startButton = document.getElementById("start-game-button");
   startButton?.addEventListener("click", () => {
     console.log("game start!");
     const root = document.getElementById("game-field") as HTMLElement;
