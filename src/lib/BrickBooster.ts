@@ -17,6 +17,8 @@ export type GameField = {
 export class BrickBooster {
   root: HTMLElement | undefined;
 
+  targetDOMList: Element[] | undefined;
+
   gameField: GameField;
 
   brickList: Brick[] | undefined;
@@ -37,8 +39,9 @@ export class BrickBooster {
 
   pause = false;
 
-  constructor(root: HTMLElement) {
+  constructor(root: HTMLElement, targetDOMList: Element[]) {
     this.root = root;
+    this.targetDOMList = targetDOMList;
 
     this.gameField = {
       ctx: undefined,
@@ -48,6 +51,13 @@ export class BrickBooster {
       leftOffset: 0,
     };
   }
+
+  start = () => {
+    this.init();
+    this.deployMultiBrickByElements();
+    this.bindcontroller();
+    this.draw();
+  };
 
   init = () => {
     this.createGameField();
@@ -90,10 +100,11 @@ export class BrickBooster {
     };
   };
 
-  deployMultiBrickByElements = (targetList: Element[]) => {
+  deployMultiBrickByElements = () => {
+    if (!this.targetDOMList) throw new Error("target DOM not found");
     const brickList: Brick[] = [];
 
-    targetList.forEach((target) => {
+    this.targetDOMList.forEach((target) => {
       const appearedBrick = this.makeAppearBrick(target, this.gameField);
       brickList.push(appearedBrick);
     });

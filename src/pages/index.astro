@@ -63,14 +63,10 @@ import ButtonBord from "../components/ButtonBord.astro";
     const linkBordList = document.getElementsByClassName(
       "link-bord"
     ) as HTMLCollection;
-    const targetList = [...linkBordList, name, profile, avatar];
+    const targetDOMList = [...linkBordList, name, profile, avatar];
 
-    const bb = new BrickBooster(root);
-
-    bb.init();
-    bb.deployMultiBrickByElements(targetList);
-    bb.bindcontroller();
-    bb.draw();
+    const bb = new BrickBooster(root, targetDOMList);
+    bb.start();
   });
 </script>
 
