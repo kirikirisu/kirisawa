@@ -1,6 +1,7 @@
 name: kirisawa CI
 
 on:
+  workflow_dispatch:
   pull_request:
 
 jobs:
