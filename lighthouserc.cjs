@@ -2,9 +2,10 @@ module.exports = {
   ci: {
     upload: {
       target: "lhci",
-      serverBaseUrl: "http://18.182.38.106:9001",
+      serverBaseUrl:
+        "http://ec2-18-182-38-106.ap-northeast-1.compute.amazonaws.com:9001",
       // https://github.com/GoogleChrome/lighthouse-ci/blob/main/docs/getting-started.md#configuration
-      token: "5592b40d-37b2-49c0-8b12-7638818f6341",
+      token: "46e3eb70-d2c1-44c2-b93f-94e6824509e0",
     },
   },
 };
